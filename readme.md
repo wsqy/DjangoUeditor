@@ -1,5 +1,5 @@
 本仓库fork自[zhangfisher](https://github.com/zhangfisher)的[DjangoUeditor](https://github.com/zhangfisher/DjangoUeditor)    
-原仓库基于Django1.6和Python2,然而现在最新的django版本是1.10,两个版本差异还是较大的，所以自行fork了一份加以修改使其兼容了最新的django1.10和至于python环境经过测试兼容了Python2.7.12和python3.5.2
+原仓库基于Django1.6和Python2,然而现在最新的django版本是1.10,两个版本差异还是较大的，所以自行fork了一份加以修改使其兼容了最新的django1.10和至于python环境经过测试兼容了Python2.7.12和python3.5.2   
 -------下面是改造过程中国的主要修改部分，暂时格式较乱，有空在整理吧
 views.py
 
