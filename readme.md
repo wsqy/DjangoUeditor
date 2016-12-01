@@ -1,41 +1,43 @@
-本仓库fork自[zhangfisher](https://github.com/zhangfisher)的[DjangoUeditor](https://github.com/zhangfisher/DjangoUeditor)    
+本仓库fork自[zhangfisher](https://github.com/zhangfisher)的[DjangoUeditor](https://github.com/zhangfisher/DjangoUeditor)   
+
 原仓库基于Django1.6和Python2,然而现在最新的django版本是1.10,两个版本差异还是较大的，所以自行fork了一份加以修改使其兼容了最新的django1.10和至于python环境经过测试兼容了Python2.7.12和python3.5.2   
--------下面是改造过程中国的主要修改部分，暂时格式较乱，有空在整理吧
-views.py
 
-1  long ---》 int
+#### 下面是改造过程中国的主要修改部分，暂时格式较乱，有空在整理吧
+- long
+```
+python3中取消了long型，以int取代Python2中的int和long
 
-2   E.message -->e
+此问题集中在 views.py和utils.py中
+```
 
-    except Exception as E:
-        f.close()
-        return u"写入文件错误:" + E.message
+- 捕获异常
+```
+python2中捕获异常有两种
+1. except ValueError, e
+2. except ValueError as e
+而python3中只保留了第二种写法
 
----
+此问题集中在 views.py中
+```
+- 字典判断是否存在键
+```
+python2中 字典有has_key方法来判断字典中是否存在键,python3版本中取消了此方法，一般在python3中用 in not in来判断
+此问题集中在 views.py, forms.py widgets.py中(widgets.py中的 recalc_path方法 出现的较多)
 
-    except Exception as e:
-        f.close()
-        return u"写入文件错误:%s" % e
+作者还采用了大量的 get(, None)来作判断
+此问题集中在 views.py中
+```
 
-3   has_key ---> get(,None) -->not in
+- utils转换数字格式的时候忘记 “111111”这种情况了
+```
+if oSize.isdigit():
+    size_Byte = int(oSize)
+```
 
-settings.py:
-def UpdateUserSettings():
-    UserSettings = getattr(gSettings, "UEDITOR_SETTINGS", {}).copy()
-    if UserSettings.get("config", None):
-        UEditorSettings.update(UserSettings["config"])
-    if UserSettings.get("upload", None):
-        UEditorUploadSettings.update(UserSettings["upload"])
---->
-widgets.py中的 recalc_path方法 出现的较多
-
-4. utils转换数字格式的时候忘记 “111111”这种情况了 加上
-            if oSize.isdigit():
-                size_Byte = int(oSize)
-
-5. Fatal Python error: Cannot recover from stack overflow.
-主要是因为@property装饰器 装饰的方法问题
-改成
+- Fatal Python error: Cannot recover from stack overflow.
+```
+主要是因为@property装饰器 装饰的方法问题,
+在给size赋值时改成 调用 FileSize方法
     # 返回字节为单位的值
     @property
     def size(self):
@@ -44,16 +46,26 @@ widgets.py中的 recalc_path方法 出现的较多
     @size.setter
     def size(self, newsize):
         self._size = FileSize(newsize)
+```
 
-6  File "/root/Desktop/viking666/testEditor/DjangoUeditor/views.py", line 209, in UploadFile
+- basejoin和urlopen方法变动
+```
+File "/root/Desktop/viking666/testEditor/DjangoUeditor/views.py", line 209, in UploadFile
     'url': urllib.basejoin(USettings.gSettings.MEDIA_URL, OutputPathFormat)
-
+    
+原因是：
 python2中是urllib.basejoin python3中修改为urllib.request.urljoin
 python2中是urllib.urlopen python3中修改为urllib.request.urlopen
 
-主要在commands.py 和views.py中
+此问题集中在commands.py 和views.py中
+```
 
-关于上传的配置：
+
+- 开发服务器中静态资源访问的问题：
+```
+在生产数据库里可以使用大型web服务器(如nginx,apache)代理静态资源,但是在开发过程中一般使用
+django自带的web服务器，这是一个微型的服务器，没有静态资源访问等一系列功能，所以还是需要在
+项目目录下的urls.py文件里设置好路由
 在settings.py里配置：
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static").replace('\\','/')
@@ -65,7 +77,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "upload").replace('\\','/')
 STATIC_ROOT  和 MEDIA_ROOT 代表静态文件和上传文件的根路径（不能一致）
 STATIC_URL 和 MEDIA_URL 对应上面的url地址  即  "/media/"能对应于os.path.join(BASE_DIR, "upload").replace('\\','/')
 
-在app的urls.py里的设置
+在项目的urls.py里的设置
 在处理静态文件和上传文件的时候，正式环境可以用nginx做代理但是开发运行一般都是用自带的web服务器，这时候就要设置路由来访问到静态文件了
 from . import settings
 from django.conf.urls.static import static
@@ -73,11 +85,11 @@ from django.conf.urls.static import static
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-
+```
 ok到此为止django-ueditor已经能够兼容1.10+python3.5了
 
 
----------------以下是原作者的readme
+## 以下是原作者的readme
 
 ### 由于近期均没有使用django的计划，所以DjangoUeditor停止更新，欢迎fork自行更改。
 
@@ -150,7 +162,7 @@ Ueditor HTML编辑器是百度开源的在线HTML编辑器,功能非常强大，
 ##### 3、配置urls
 	url(r'^ueditor/',include('DjangoUeditor.urls' )),
 
-##4、在models中的使用
+#### 4、在models中的使用
 
 	from DjangoUeditor.models import UEditorField
 	class Blog(models.Model):
