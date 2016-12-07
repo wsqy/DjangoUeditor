@@ -1,3 +1,16 @@
+#### 下面是三次修改中的主要修改部分(主要适用于Python3)
+- unicode
+```
+在Python3中, 没有预定义unicode类型了,内置字符串就是str, 但是str中的字符都是unicode编码的 
+Python2不必修改
+Python3修改116行中的unicode改成str
+```
+
+---------------------------------------
+
+以下是fork自wsqy/DjangoUeditor的部分的readme
+============
+
 本仓库fork自[zhangfisher](https://github.com/zhangfisher)的[DjangoUeditor](https://github.com/zhangfisher/DjangoUeditor)   
 
 原仓库基于Django1.6和Python2,然而现在最新的django版本是1.10,两个版本差异还是较大的，所以自行fork了一份加以修改使其兼容了最新的django1.10和至于python环境经过测试兼容了Python2.7.12和python3.5.2   
