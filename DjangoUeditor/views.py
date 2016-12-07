@@ -113,7 +113,7 @@ def get_files(root_path, cur_path, allow_types=[]):
     files = []
     items = os.listdir(cur_path)
     for item in items:
-        item = unicode(item)
+        item = str(item)
         item_fullname = os.path.join(root_path, cur_path, item).replace("\\", "/")
         if os.path.isdir(item_fullname):
             files.extend(get_files(root_path, item_fullname, allow_types))
