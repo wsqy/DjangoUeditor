@@ -1,4 +1,12 @@
 本仓库fork自[zhangfisher](https://github.com/zhangfisher)的[DjangoUeditor](https://github.com/zhangfisher/DjangoUeditor)   
+### 2017-12-25更新  支持django2啦
+2017-12-02 django大版本升级为django2,其主要的变化就是不支持python2了,如果还想继续使用python2请使用django1.11(pip install django==1.11)这是支持python2的最后一个LTS
+
+## 已经测试支持的django版本为 1.10 1.11 2.0      
+
+## 已经测试支持的python版本为 2.7 3.5  
+
+### 测试后台的登录账号`djangoueditor` 密码`djangoueditor`
 
 原仓库基于Django1.6和Python2,然而现在最新的django版本是1.10,两个版本差异还是较大的，所以自行fork了一份加以修改使其兼容了最新的django1.10和至于python环境经过测试兼容了Python2.7.12和python3.5.2   
 
@@ -52,7 +60,7 @@ if oSize.isdigit():
 ```
 File "/root/Desktop/viking666/testEditor/DjangoUeditor/views.py", line 209, in UploadFile
     'url': urllib.basejoin(USettings.gSettings.MEDIA_URL, OutputPathFormat)
-    
+
 原因是：
 python2中是urllib.basejoin python3中修改为urllib.request.urljoin
 python2中是urllib.urlopen python3中修改为urllib.request.urlopen
